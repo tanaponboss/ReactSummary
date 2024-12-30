@@ -1,31 +1,27 @@
 import Post from "./Post";
 import classes from "./PostsList.module.css";
-import NewPost from "./NewPost";
-import { useState } from "react";
-import Modal from "./Modal";
+import axios from "axios";
+import { useLoaderData } from "react-router-dom";
 
-export default function PostsList({isPosting, onStopPosting}) {
-  const [enteredBody, setEnteredBody] = useState("");
-  const bodyChangeHandler = (event) => {
-    setEnteredBody(event.target.value);
-  };
-
-  const [enteredAuthor, setEnteredAuthor] = useState("");
-  const authorChangeHandler = (event) => {
-    setEnteredAuthor(event.target.value);
-  };
-
+export default function PostsList() {
+  const posts = useLoaderData();
 
   return (
     <>
-      {isPosting && <Modal onClose={onStopPosting}><NewPost
-        onBodyChange={bodyChangeHandler}
-        onAuthorChange={authorChangeHandler}
-      /></Modal>}
-      <ul className={classes.posts}>
-        <Post author={enteredAuthor} body={enteredBody} />
-        <Post author="Manu" body="I love Angular" />
-      </ul>
+      {posts.length > 0 && (
+        <ul className={classes.posts}>
+          {posts.map((post) => (
+            <Post key={post.id} id={post.id} author={post.author} body={post.body} />
+          ))}
+        </ul>
+      )}
+      {posts.length === 0 && (
+        <div style={{ textAlign: "center", color: "white" }}>
+          <h2>No posts yet.</h2>
+          <p>Why not create one?</p>{" "}
+        </div>
+      )}
+     
     </>
   );
 }
